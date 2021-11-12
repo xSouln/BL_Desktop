@@ -1,0 +1,16 @@
+﻿<Application x:Class="BootloaderSEX1.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:BootloaderSEX1"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/xLibWpf;component/xWindows/Resources/MenuPattern.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/xLibWpf;component/xWindows/Resources/ButtonPattern.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/xLibWpf;component/xWindows/Resources/TextBoxPattern.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/xLibWpf;component/xWindows/Resources/ListViewPattern.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
