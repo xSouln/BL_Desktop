@@ -69,6 +69,7 @@
     <Compile Include="Sources\Requests.cs" />
     <Compile Include="Sources\RowStructure.cs" />
     <Compile Include="Sources\Types.cs" />
+    <Compile Include="UI\UI_FlashInfo.cs" />
     <Compile Include="WindowBootloader.xaml.cs">
       <DependentUpon>WindowBootloader.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -106,8 +107,6 @@
       <Name>xLibWpf</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -31,13 +31,17 @@ namespace BootloaderDesktop
 
             InitializeComponent();
 
+            Bootloader.Init();
+
             MenuTcp.Click += WindowTcpConnection.OpenClick;
             MenuTerminal.Click += WindowTerminal.OpenClick;
+            MenuSerialPort.Click += WindowSerialPort.OpenClick;
+
+            WindowSerialPort.SerialPort = Bootloader.SerialPort;
+            WindowTcpConnection.Tcp = Bootloader.Tcp;
 
             ListViewStructures.ItemsSource = Structures;
             MenuFileOpen.Click += FileOpenClick;
-
-            Bootloader.Init();
 
             Closed += MainWindowClosed;
         }
@@ -81,6 +85,7 @@ namespace BootloaderDesktop
         {
             WindowTcpConnection.Dispose();
             WindowTerminal.Dispose();
+            WindowSerialPort.Dispose();
 
             Bootloader.Dispose();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BootloaderDesktop.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace BootloaderDesktop
                 GetInfo,
             };
         }
+
+        public static UI_FlashInfo FlashInfo = new UI_FlashInfo();
 
         public static event xAction<string> Tracer;
         public static xAction<bool, byte[]> Transmitter;
@@ -53,6 +56,10 @@ namespace BootloaderDesktop
 
             request_line.StartUpdate(900);
         }
+
+        public static xSerialPort SerialPort => serial_port;
+
+        public static xTcp Tcp => tcp;
 
         private static xAction<bool, byte[]> RequstTransmitter()
         {

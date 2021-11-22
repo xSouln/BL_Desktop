@@ -27,7 +27,7 @@ namespace BootloaderDesktop
                 new Try();
             }
 
-            public class Get
+            public unsafe class Get
             {
                 public unsafe class Result<TObject> : xResponseResult where TObject : unmanaged
                 {
@@ -62,6 +62,7 @@ namespace BootloaderDesktop
                     {
                         EventReceive = (response, result) =>
                         {
+                            Bootloader.FlashInfo.Value = *result.Arg;
                             xTracer.Message("Response accept: " + response.Action);
                             return true;
                         }
