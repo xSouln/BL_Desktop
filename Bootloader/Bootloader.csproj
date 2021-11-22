@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{78627202-4BA6-4EBB-B9B9-3011F5C6AA14}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>BootloaderSEX1</RootNamespace>
-    <AssemblyName>BootloaderSEX1</AssemblyName>
+    <RootNamespace>BootloaderDesktop</RootNamespace>
+    <AssemblyName>BootloaderDesktop</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -56,7 +56,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="WindowBootloader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -64,8 +64,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Sources\Bootloader.cs" />
+    <Compile Include="Sources\HexReader.cs" />
+    <Compile Include="Sources\Requests.cs" />
+    <Compile Include="Sources\RowStructure.cs" />
+    <Compile Include="Sources\Types.cs" />
+    <Compile Include="WindowBootloader.xaml.cs">
+      <DependentUpon>WindowBootloader.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -102,7 +107,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Sources\" />
+    <Folder Include="UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

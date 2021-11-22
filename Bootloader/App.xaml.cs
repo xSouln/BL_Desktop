@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace BootloaderSEX1
+namespace BootloaderDesktop
 {
     /// <summary>
     /// Логика взаимодействия для App.xaml

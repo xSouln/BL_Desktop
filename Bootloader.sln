@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xLibWpf", "..\SDK\xLibWpf\xLibWpf.csproj", "{DEBE0863-3E66-4124-8E1A-0CB434227A5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootloaderSEX1", "BootloaderSEX1\BootloaderSEX1.csproj", "{78627202-4BA6-4EBB-B9B9-3011F5C6AA14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bootloader", "Bootloader\Bootloader.csproj", "{78627202-4BA6-4EBB-B9B9-3011F5C6AA14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
