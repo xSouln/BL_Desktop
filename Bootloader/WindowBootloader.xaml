@@ -5,7 +5,61 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BootloaderDesktop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="661.5" Width="759.79" Background="#FF3F3F46">
+        Title="MainWindow" Height="661.5" Width="1180" Background="#FF3F3F46">
+    <Window.Resources>
+
+        <LinearGradientBrush x:Key="ButtonDarkBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#939393" Offset="0.0"/>
+                    <GradientStop Color="#717171" Offset="0.05"/>
+                    <GradientStop Color="#606060" Offset="1.0"/>
+                </GradientStopCollection>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="ButtonClicked" StartPoint="0.5,0" EndPoint="0.5,1">
+            <LinearGradientBrush.GradientStops>
+                <GradientStopCollection>
+                    <GradientStop Color="#363636" Offset="0.0"/>
+                    <GradientStop Color="#393939" Offset="1.0"/>
+                </GradientStopCollection>
+            </LinearGradientBrush.GradientStops>
+        </LinearGradientBrush>
+
+        <ControlTemplate TargetType="{x:Type Button}" x:Key="ButtonTemplate1">
+            <Border x:Name="buttonBorder"
+                BorderBrush="#FF834545" 
+                CornerRadius="5"
+                BorderThickness="1"
+                Background="{TemplateBinding Background}"
+                Visibility="{TemplateBinding Visibility}"
+                Height="{TemplateBinding Height}"
+                Width="{TemplateBinding Width}">
+
+                <ContentControl Margin="5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Background="{TemplateBinding Background}"
+                    Visibility="{TemplateBinding Visibility}"
+                    Content="{TemplateBinding Content}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <!--<Setter Property="FontWeight" Value="Bold" />-->
+                    <Setter TargetName="buttonBorder" Property="Background" Value="{StaticResource ButtonDarkBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="buttonBorder" Property="Background" Value="{StaticResource ButtonClicked}" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter TargetName="buttonBorder" Property="Background" Value="LightGray"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40*" MinHeight="40" MaxHeight="40"/>
@@ -25,7 +79,9 @@
         </Menu>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="482*"/>
+                <ColumnDefinition Width="891*"/>
+                <ColumnDefinition Width="320*" MinWidth="320" MaxWidth="320"/>
+                <ColumnDefinition Width="160*" MinWidth="160" MaxWidth="160"/>
             </Grid.ColumnDefinitions>
             <ListView x:Name="ListViewStructures" FontSize="18" Style="{DynamicResource ListViewStyle1}" Background="#FF3F3F46" BorderBrush="#FF834545" Foreground="#FFDEC316">
                 <ListView.View>
@@ -38,6 +94,18 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+            <ListView x:Name="ListViewPropertys" FontSize="18" Style="{DynamicResource ListViewStyle1}" Background="#FF3F3F46" BorderBrush="#FF834545" Foreground="#FFDEC316" Grid.Column="1" Margin="5,0,0,0" SelectionChanged="ListViewPropertys_SelectionChanged">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="name" DisplayMemberBinding="{Binding Name}" Width="150"/>
+                        <GridViewColumn Header="value" DisplayMemberBinding="{Binding Value}" Width="150"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Button x:Name="ButLoadStart" Content="Load" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,0" Grid.Column="2" Click="ButLoadStart_Click" Height="36" VerticalAlignment="Top"/>
+            <Button x:Name="ButLoadStop" Content="Stop" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,45,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButLoadStop_Click"/>
+            <Button x:Name="ButErase" Content="Erase" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,90,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButErase_Click"/>
+            <Button x:Name="ButJumpToMain" Content="To Main" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,135,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButJumpToMain_Click"/>
         </Grid>
     </Grid>
 </Window>

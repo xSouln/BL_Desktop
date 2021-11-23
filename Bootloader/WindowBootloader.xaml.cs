@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using xLib;
+using xLib.UI_Propertys;
 using static BootloaderDesktop.Bootloader.Types;
 
 namespace BootloaderDesktop
@@ -24,7 +25,6 @@ namespace BootloaderDesktop
     /// </summary>
     public partial class WindowBootloader : Window
     {
-        public ObservableCollection<RowStructure> Structures { get; set; } = new ObservableCollection<RowStructure>();
         public WindowBootloader()
         {
             xSupport.Context = this;
@@ -33,6 +33,9 @@ namespace BootloaderDesktop
 
             Bootloader.Init();
 
+            Bootloader.SerialPort.SerialPortOptions = Properties.Settings.Default.SerialPortOptions;
+            Bootloader.Tcp.LastAddress = Properties.Settings.Default.TcpAddress;
+
             MenuTcp.Click += WindowTcpConnection.OpenClick;
             MenuTerminal.Click += WindowTerminal.OpenClick;
             MenuSerialPort.Click += WindowSerialPort.OpenClick;
@@ -40,10 +43,30 @@ namespace BootloaderDesktop
             WindowSerialPort.SerialPort = Bootloader.SerialPort;
             WindowTcpConnection.Tcp = Bootloader.Tcp;
 
-            ListViewStructures.ItemsSource = Structures;
+            ListViewStructures.ItemsSource = Bootloader.Colections.Structures;
+            ListViewPropertys.ItemsSource = Bootloader.Colections.Propertys;
+
+            Bootloader.SerialPort.ConnectionStateChanged += SerialPortConnectionStateChanged;
+            Bootloader.Tcp.EventConnected += TcpEventConnected;
+
             MenuFileOpen.Click += FileOpenClick;
 
             Closed += MainWindowClosed;
+        }
+
+        private void TcpEventConnected(xTcp arg)
+        {
+            Properties.Settings.Default.TcpAddress = Bootloader.Tcp.LastAddress;
+            Properties.Settings.Default.Save();
+        }
+
+        private void SerialPortConnectionStateChanged(xSerialPort obj, bool state)
+        {
+            if (state)
+            {
+                Properties.Settings.Default.SerialPortOptions = Bootloader.SerialPort.SerialPortOptions;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private unsafe void FileOpenClick(object sender, RoutedEventArgs e)
@@ -53,41 +76,70 @@ namespace BootloaderDesktop
             if (OPF.ShowDialog() == true)
             {
                 RowStructure[] structures = HexReader.Read(OPF.FileName);
-                Structures.Clear();
+
+                Bootloader.Colections.Structures.Clear();
                 foreach (RowStructure row in structures)
                 {
-                    Structures.Add(row);
+                    Bootloader.Colections.Structures.Add(row);
                 }
 
-                byte[] firmware_data = HexReader.GetFlash(structures);
-                byte[] flash_data = new byte[0x10000 - 0x8000];
-                int firmware_data_size = HexReader.ToFlashAdd(structures, flash_data);
+                //Bootloader.Firmware = HexReader.GetFlash(structures);
+                //Bootloader.Firmware = new byte[0x10000 - 0x8000];
+                //int firmware_data_size = HexReader.ToFlashAdd(structures, Bootloader.Firmware);
 
-                int i = firmware_data_size;
-
-                while (i < flash_data.Length - sizeof(FlashInfoT))
+                //int i = firmware_data_size;
+                /*
+                while (i < Bootloader.Firmware.Length - sizeof(FlashInfoT))
                 {
-                    flash_data[i] = 0xff;
+                    Bootloader.Firmware[i] = 0xff;
                     i++;
                 }
 
-                fixed (byte* ptr = flash_data)
+                fixed (byte* ptr = Bootloader.Firmware)
                 {
-                    FlashInfoT* info = (FlashInfoT*)(ptr + flash_data.Length - sizeof(FlashInfoT));
+                    FlashInfoT* info = (FlashInfoT*)(ptr + Bootloader.Firmware.Length - sizeof(FlashInfoT));
                     info->StartAddress = 0x8000;
                     info->EndAdress = 0x10000;
                     info->Crc = 12345;
                 }
+                */
+                Bootloader.Firmware = HexReader.GetFlash(structures);
             }
         }
 
         private void MainWindowClosed(object sender, EventArgs e)
         {
+            Bootloader.Dispose();
+
             WindowTcpConnection.Dispose();
             WindowTerminal.Dispose();
             WindowSerialPort.Dispose();
+        }
 
-            Bootloader.Dispose();
+        private void ButLoadStart_Click(object sender, RoutedEventArgs e)
+        {
+            Bootloader.StartLoad(0x08008000, Bootloader.Firmware, 256);
+        }
+
+        private void ListViewPropertys_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ListViewPropertys.SelectedValue != null && ListViewPropertys.SelectedValue is UI_Property property) { property.Select(); }
+            ListViewPropertys.UnselectAll();
+        }
+
+        private void ButErase_Click(object sender, RoutedEventArgs e)
+        {
+            Bootloader.Erase(0x08008000, 0x400, (0x0801FFFF - 0x08008000) / 0x400);
+        }
+
+        private void ButJumpToMain_Click(object sender, RoutedEventArgs e)
+        {
+            Bootloader.JumpToMain();
+        }
+
+        private void ButLoadStop_Click(object sender, RoutedEventArgs e)
+        {
+            Bootloader.StopLoad();
         }
     }
 }

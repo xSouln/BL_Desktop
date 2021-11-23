@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using xLib;
 using xLib.Sources;
 using xLib.Transceiver;
+using static BootloaderDesktop.Bootloader.Types;
 
 namespace BootloaderDesktop
 {
@@ -15,14 +17,21 @@ namespace BootloaderDesktop
         public static class UpdateList
         {
             public static xRequest GetInfo = Requests.Get.Info.Prepare();
+            public static xRequest GetAppInfo = Requests.Get.AppInfo.Prepare();
+            public static xRequest GetStatus = Requests.Get.Status.Prepare();
 
             public static List<xRequest> List = new List<xRequest>
             {
-                GetInfo,
+                GetAppInfo,
+                GetStatus
             };
         }
 
         public static UI_FlashInfo FlashInfo = new UI_FlashInfo();
+        public static UI_AppFlashInfo AppFlashInfo = new UI_AppFlashInfo();
+        public static UI_Status Status = new UI_Status();
+
+        public static byte[] Firmware;
 
         public static event xAction<string> Tracer;
         public static xAction<bool, byte[]> Transmitter;
@@ -30,6 +39,7 @@ namespace BootloaderDesktop
         private static xTcp tcp;
         private static xSerialPort serial_port;
         private static xRequestLine request_line;
+        private static Thread thread_load;
 
         public static xCommunicationControl Communication = new xCommunicationControl(2000);
 
@@ -46,7 +56,7 @@ namespace BootloaderDesktop
             {
                 Requests = UpdateList.List,
                 RequstTransmitter = RequstTransmitter,
-                TryCount = 2,
+                TryCount = 1,
                 ResponseTimeOut = 300,
                 Tracer = xTracer.Message
             };
@@ -74,6 +84,99 @@ namespace BootloaderDesktop
             tcp?.Disconnect();
             serial_port?.Disconnect();
             request_line?.Dispose();
+            thread_load?.Abort();
+        }
+
+        public static async void Erase(uint start_address, ushort page_size, ushort pages_count)
+        {
+            var response = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = start_address, PagesCount = pages_count }).TransmitionAsync(RequstTransmitter(), 1, 5000);
+            xTracer.Message("Erase result: " + response?.Result?.Error);
+        }
+        public static void StopLoad()
+        {
+            thread_load?.Abort();
+            thread_load = null;
+        }
+
+        public static async void SetLock(ELockState request)
+        {
+            var response = await Requests.Set.LockState.Prepare(request).TransmitionAsync(RequstTransmitter(), 1, 300);
+            xTracer.Message("Erase result: " + response?.Result?.Error);
+        }
+
+        public static async void JumpToMain()
+        {
+            var response = await Requests.Try.JumpToMain.Prepare().TransmitionAsync(RequstTransmitter(), 1, 300);
+            xTracer.Message("Erase result: " + response?.Result?.Error);
+        }
+
+        public static async void LoadAppInfo(uint info_address, FlashInfoT info)
+        {
+            var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = info_address, PagesCount = 1 }).TransmitionAsync(RequstTransmitter(), 1, 1000);
+
+            ushort info_size;
+            unsafe { info_size = (ushort)sizeof(FlashInfoT); }
+
+            var result2 = await Requests.Try.Write.Prepare(new RequestWriteT
+            {
+                StartAddress = info_address,
+                DataSize = info_size,
+            },
+            info
+            ).TransmitionAsync(RequstTransmitter(), 1, 1000);
+
+            var result3 = await Requests.Try.UpdateInfo.Prepare().TransmitionAsync(RequstTransmitter(), 1, 1000);
+        }
+
+        public static void StartLoad(uint start_address, byte[] firmaware, ushort packet_size)
+        {
+            int offset = 0;
+            ushort crc = 0;
+            uint address = start_address;
+            List<byte> data = new List<byte>();
+
+            if (firmaware == null || firmaware.Length == 0 || thread_load != null) { return; }
+
+            thread_load = new Thread(async () =>
+            {
+                while (true)
+                {
+                    int i = 0;
+                    data.Clear();
+                    while (offset < firmaware.Length && i < packet_size)
+                    {
+                        data.Add(firmaware[offset]);
+                        crc += firmaware[offset];
+                        offset++;
+                        i++;
+                    }
+
+                    if (data.Count == 0) { break; }
+
+                    var result = await Requests.Try.Write.Prepare(new RequestWriteT
+                    {
+                        StartAddress = address,
+                        DataSize = (ushort)data.Count,
+                    },
+                    data
+                    ).TransmitionAsync(RequstTransmitter(), 1, 1000);
+
+                    xTracer.Message("Write result: " + result.Result?.Error + ", response time: " + result.ResponseTime);
+
+                    address += (uint)data.Count;
+                }
+
+                LoadAppInfo(0x08007C00, new FlashInfoT
+                {
+                    StartAddress = start_address,
+                    EndAdress = start_address + (uint)firmaware.Length,
+                    PageSize = 0x400,
+                    Crc = crc
+                });
+
+                thread_load = null;
+            });
+            thread_load.Start();
         }
 
         public static void EventPacketReceive(xReceiverData ReceiverData)

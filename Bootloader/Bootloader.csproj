@@ -65,11 +65,15 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Sources\Bootloader.cs" />
+    <Compile Include="Sources\Colections.cs" />
     <Compile Include="Sources\HexReader.cs" />
     <Compile Include="Sources\Requests.cs" />
     <Compile Include="Sources\RowStructure.cs" />
     <Compile Include="Sources\Types.cs" />
+    <Compile Include="UI\UI_AppFlashInfo.cs" />
+    <Compile Include="UI\UI_DeviceInfo.cs" />
     <Compile Include="UI\UI_FlashInfo.cs" />
+    <Compile Include="UI\UI_Status.cs" />
     <Compile Include="WindowBootloader.xaml.cs">
       <DependentUpon>WindowBootloader.xaml</DependentUpon>
       <SubType>Code</SubType>
