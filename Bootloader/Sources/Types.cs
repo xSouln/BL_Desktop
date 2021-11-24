@@ -27,10 +27,10 @@ namespace BootloaderDesktop
                 SET_HANDLER,
 
                 TRY_X = 300,
+                TRY_RESET,
                 TRY_ERASE,
                 TRY_WRITE,
                 TRY_READ,
-                TRY_STOP,
                 TRY_JUMP_TO_BOOT,
                 TRY_JUMP_TO_MAIN,
                 TRY_UPDATE_INFO,
@@ -81,6 +81,16 @@ namespace BootloaderDesktop
                 Lock
             }
 
+            public enum EAppInfoStatus : ushort
+            {
+                BootIsEnable = 1 << 0,
+                Reset = 1 << 1,
+                JumpToMain = 1 << 2,
+                JumpToBoot = 1 << 3,
+
+                AppCrcError = 1 << 4
+            }
+
             public struct StatusT
             {
                 public EStatus Status;
@@ -94,20 +104,24 @@ namespace BootloaderDesktop
                 public EErrors OperationResult;
             }
 
-            public struct FlashInfoT
+            public struct FirmwareInfoT
             {
                 public uint StartAddress;
                 public uint EndAdress;
-                public uint Requests;
-                public ushort PageSize;
+                public uint Content;
+                public ushort Requests;
                 public ushort Crc;
             }
 
             public struct AppFlashInfoT
             {
-                public uint StartAddress;
-                public uint EndAdress;
-                public ushort PageSize;
+                public uint BootStartAddress;
+                public uint BootEndAddress;
+
+                public uint AppStartAddress;
+                public uint AppEndAddress;
+
+                public EAppInfoStatus Status;
                 public ushort Crc;
             }
 
@@ -128,8 +142,8 @@ namespace BootloaderDesktop
             public struct RequestEraseT
             {
                 public uint StartAddress;
-                public ushort PagesCount;
-                public ushort Action;
+                public uint EndAdress;
+                public uint Action;
             }
 
             public struct RequestCrcT

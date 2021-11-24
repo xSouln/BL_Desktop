@@ -72,7 +72,7 @@
     <Compile Include="Sources\Types.cs" />
     <Compile Include="UI\UI_AppFlashInfo.cs" />
     <Compile Include="UI\UI_DeviceInfo.cs" />
-    <Compile Include="UI\UI_FlashInfo.cs" />
+    <Compile Include="UI\UI_FirmwareInfo.cs" />
     <Compile Include="UI\UI_Status.cs" />
     <Compile Include="WindowBootloader.xaml.cs">
       <DependentUpon>WindowBootloader.xaml</DependentUpon>

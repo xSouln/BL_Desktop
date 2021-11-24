@@ -16,7 +16,7 @@ namespace BootloaderDesktop
     {
         public static class UpdateList
         {
-            public static xRequest GetInfo = Requests.Get.Info.Prepare();
+            public static xRequest GetFirmwareInfo = Requests.Get.FirmwareInfo.Prepare();
             public static xRequest GetAppInfo = Requests.Get.AppInfo.Prepare();
             public static xRequest GetStatus = Requests.Get.Status.Prepare();
 
@@ -27,7 +27,7 @@ namespace BootloaderDesktop
             };
         }
 
-        public static UI_FlashInfo FlashInfo = new UI_FlashInfo();
+        public static UI_FirmwareInfo FirmwareInfo = new UI_FirmwareInfo();
         public static UI_AppFlashInfo AppFlashInfo = new UI_AppFlashInfo();
         public static UI_Status Status = new UI_Status();
 
@@ -87,10 +87,10 @@ namespace BootloaderDesktop
             thread_load?.Abort();
         }
 
-        public static async void Erase(uint start_address, ushort page_size, ushort pages_count)
+        public static async void Erase(uint start_address, uint end_address)
         {
-            var response = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = start_address, PagesCount = pages_count }).TransmitionAsync(RequstTransmitter(), 1, 5000);
-            xTracer.Message("Erase result: " + response?.Result?.Error);
+            var response = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = start_address, EndAdress = end_address }).TransmitionAsync(RequstTransmitter(), 1, 5000);
+            xTracer.Message("Erase result: " + response.Result?.Error);
         }
         public static void StopLoad()
         {
@@ -101,21 +101,37 @@ namespace BootloaderDesktop
         public static async void SetLock(ELockState request)
         {
             var response = await Requests.Set.LockState.Prepare(request).TransmitionAsync(RequstTransmitter(), 1, 300);
-            xTracer.Message("Erase result: " + response?.Result?.Error);
+            xTracer.Message("Erase result: " + response.Result?.Error);
         }
 
         public static async void JumpToMain()
         {
             var response = await Requests.Try.JumpToMain.Prepare().TransmitionAsync(RequstTransmitter(), 1, 300);
-            xTracer.Message("Erase result: " + response?.Result?.Error);
+            xTracer.Message("Erase result: " + response.Result?.Error);
         }
 
-        public static async void LoadAppInfo(uint info_address, FlashInfoT info)
+        public static async void JumpToBoot()
         {
-            var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = info_address, PagesCount = 1 }).TransmitionAsync(RequstTransmitter(), 1, 1000);
+            var response = await Requests.Try.JumpToBoot.Prepare().TransmitionAsync(RequstTransmitter(), 1, 1000);
+            xTracer.Message("Erase result: " + response.Result?.Error);
+            //await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = 0x08004000, EndAdress = 0x08008000 }).TransmitionAsync(RequstTransmitter(), 1, 1000);
+        }
+
+        public static async void Reset()
+        {
+            var response = await Requests.Try.Reset.Prepare().TransmitionAsync(RequstTransmitter(), 1, 300);
+            xTracer.Message("Erase result: " + response.Result?.Error);
+        }
+
+        public static async void LoadAppInfo(uint info_address, FirmwareInfoT info)
+        {
+            //var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = info_address, EndAdress = info_address + info.PageSize }).TransmitionAsync(RequstTransmitter(), 1, 1000);
+            var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = 0x08004000, EndAdress = 0x08008000 }).TransmitionAsync(RequstTransmitter(), 1, 1000);
+
+            Status.Erase.WaitValue(false, 1000);
 
             ushort info_size;
-            unsafe { info_size = (ushort)sizeof(FlashInfoT); }
+            unsafe { info_size = (ushort)sizeof(FirmwareInfoT); }
 
             var result2 = await Requests.Try.Write.Prepare(new RequestWriteT
             {
@@ -124,6 +140,8 @@ namespace BootloaderDesktop
             },
             info
             ).TransmitionAsync(RequstTransmitter(), 1, 1000);
+
+            Status.Write.WaitValue(false, 1000);
 
             var result3 = await Requests.Try.UpdateInfo.Prepare().TransmitionAsync(RequstTransmitter(), 1, 1000);
         }
@@ -166,11 +184,11 @@ namespace BootloaderDesktop
                     address += (uint)data.Count;
                 }
 
-                LoadAppInfo(0x08007C00, new FlashInfoT
+                LoadAppInfo(0x08004000, new FirmwareInfoT
                 {
                     StartAddress = start_address,
                     EndAdress = start_address + (uint)firmaware.Length,
-                    PageSize = 0x400,
+                    Content = 0x400,
                     Crc = crc
                 });
 

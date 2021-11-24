@@ -17,10 +17,17 @@ namespace BootloaderDesktop
             public static ObservableCollection<UI_Property> Propertys { get; set; } = new ObservableCollection<UI_Property>()
             {
                 new UI_Property { Name = "App flash info:" },
-                AppFlashInfo.StartAddress,
-                AppFlashInfo.EndAdress,
-                AppFlashInfo.PageSize,
+                AppFlashInfo.BootStartAddress,
+                AppFlashInfo.BootEndAddress,
+                AppFlashInfo.AppStartAddress,
+                AppFlashInfo.AppEndAddress,
                 AppFlashInfo.Crc,
+
+                AppFlashInfo.BootIsEnable,
+                AppFlashInfo.Reset,
+                AppFlashInfo.JumpToMain,
+                AppFlashInfo.JumpToBoot,
+                AppFlashInfo.AppCrcError,
 
                 new UI_Property { Name = "" },
                 new UI_Property { Name = "Status:" },

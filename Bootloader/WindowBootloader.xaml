@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BootloaderDesktop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="661.5" Width="1180" Background="#FF3F3F46">
+        Title="MainWindow" Height="800" Width="1180" Background="#FF3F3F46">
     <Window.Resources>
 
         <LinearGradientBrush x:Key="ButtonDarkBrush" StartPoint="0.5,0" EndPoint="0.5,1">
@@ -65,7 +65,7 @@
             <RowDefinition Height="40*" MinHeight="40" MaxHeight="40"/>
             <RowDefinition Height="395*"/>
         </Grid.RowDefinitions>
-        <Menu MinHeight="35" MaxHeight="35" Background="#FF3F3F46" Margin="0,0,202,0">
+        <Menu MinHeight="35" MaxHeight="35" Background="#FF3F3F46" HorizontalAlignment="Left" Width="531">
 
             <MenuItem x:Name="MenuFile" Header="File" Height="35" Template="{DynamicResource MenuItemControlTemplate1}" BorderBrush="#FF3F3F46" Foreground="#FFDEC316" Width="100" FontSize="18">
                 <MenuItem x:Name="MenuFileOpen" Header="Open" Template="{DynamicResource MenuItemControlTemplate2}"/>
@@ -106,6 +106,9 @@
             <Button x:Name="ButLoadStop" Content="Stop" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,45,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButLoadStop_Click"/>
             <Button x:Name="ButErase" Content="Erase" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,90,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButErase_Click"/>
             <Button x:Name="ButJumpToMain" Content="To Main" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,135,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButJumpToMain_Click"/>
+            <Button x:Name="ButJumpToBoot" Content="To Boot" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,180,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButJumpToBoot_Click"/>
+            <Button x:Name="ButReset" Content="Reset" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,225,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButReset_Click"/>
         </Grid>
+        <Label x:Name="LabelCommunication" Content="Communication" Background="{Binding Background}" FontSize="18" HorizontalAlignment="Right" Width="150" Foreground="#FFDEC316" Margin="0,2,5,2"/>
     </Grid>
 </Window>

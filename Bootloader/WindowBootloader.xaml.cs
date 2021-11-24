@@ -45,6 +45,7 @@ namespace BootloaderDesktop
 
             ListViewStructures.ItemsSource = Bootloader.Colections.Structures;
             ListViewPropertys.ItemsSource = Bootloader.Colections.Propertys;
+            LabelCommunication.DataContext = Bootloader.Communication;
 
             Bootloader.SerialPort.ConnectionStateChanged += SerialPortConnectionStateChanged;
             Bootloader.Tcp.EventConnected += TcpEventConnected;
@@ -118,7 +119,7 @@ namespace BootloaderDesktop
 
         private void ButLoadStart_Click(object sender, RoutedEventArgs e)
         {
-            Bootloader.StartLoad(0x08008000, Bootloader.Firmware, 256);
+            Bootloader.StartLoad(0x080E0000, Bootloader.Firmware, 256);
         }
 
         private void ListViewPropertys_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -129,7 +130,7 @@ namespace BootloaderDesktop
 
         private void ButErase_Click(object sender, RoutedEventArgs e)
         {
-            Bootloader.Erase(0x08008000, 0x400, (0x0801FFFF - 0x08008000) / 0x400);
+            Bootloader.Erase(0x080E0000, 0x080FFFFF);
         }
 
         private void ButJumpToMain_Click(object sender, RoutedEventArgs e)
@@ -140,6 +141,16 @@ namespace BootloaderDesktop
         private void ButLoadStop_Click(object sender, RoutedEventArgs e)
         {
             Bootloader.StopLoad();
+        }
+
+        private void ButJumpToBoot_Click(object sender, RoutedEventArgs e)
+        {
+            Bootloader.JumpToBoot();
+        }
+
+        private void ButReset_Click(object sender, RoutedEventArgs e)
+        {
+            Bootloader.Reset();
         }
     }
 }

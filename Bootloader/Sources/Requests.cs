@@ -13,8 +13,8 @@ namespace BootloaderDesktop
     {
         public class Requests
         {
-            public const string REQ = "#REQ::";
-            public const string RES = "#RES::";
+            public const string REQ = "#RQBL:";
+            public const string RES = "#RSBL:";
             public const string END = "\r";
 
             public static xRequestHandler Handler = new xRequestHandler();
@@ -56,13 +56,13 @@ namespace BootloaderDesktop
 
                 public Get() { }
 
-                public static Builder<FlashInfoT, EActions> Info = new Builder<FlashInfoT, EActions>(Handler, EActions.GET_INFO)
+                public static Builder<FirmwareInfoT, EActions> FirmwareInfo = new Builder<FirmwareInfoT, EActions>(Handler, EActions.GET_INFO)
                 {
                     Response =
                     {
                         EventReceive = (response, result) =>
                         {
-                            Bootloader.FlashInfo.Value = *result.Response;
+                            Bootloader.FirmwareInfo.Value = *result.Response;
                             xTracer.Message("Response accept: " + response.Action);
                             return true;
                         }
@@ -348,13 +348,13 @@ namespace BootloaderDesktop
                     Tracer = xTracer.Message
                 };
 
-                public static Builder<StatusT, EActions> JumpToMain = new Builder<StatusT, EActions>(Handler, EActions.TRY_JUMP_TO_MAIN)
+                public static Builder<AppFlashInfoT, EActions> JumpToMain = new Builder<AppFlashInfoT, EActions>(Handler, EActions.TRY_JUMP_TO_MAIN)
                 {
                     Response =
                     {
                         EventReceive = (response, result) =>
                         {
-                            Bootloader.Status.Value = *result.Response;
+                            Bootloader.AppFlashInfo.Value = *result.Response;
                             xTracer.Message("Response accept: " + response.Action);
                             return true;
                         }
@@ -362,13 +362,41 @@ namespace BootloaderDesktop
                     Tracer = xTracer.Message
                 };
 
-                public static Builder<StatusT, EActions> UpdateInfo = new Builder<StatusT, EActions>(Handler, EActions.TRY_UPDATE_INFO)
+                public static Builder<AppFlashInfoT, EActions> JumpToBoot = new Builder<AppFlashInfoT, EActions>(Handler, EActions.TRY_JUMP_TO_BOOT)
                 {
                     Response =
                     {
                         EventReceive = (response, result) =>
                         {
-                            Bootloader.Status.Value = *result.Response;
+                            Bootloader.AppFlashInfo.Value = *result.Response;
+                            xTracer.Message("Response accept: " + response.Action);
+                            return true;
+                        }
+                    },
+                    Tracer = xTracer.Message
+                };
+
+                public static Builder<AppFlashInfoT, EActions> Reset = new Builder<AppFlashInfoT, EActions>(Handler, EActions.TRY_RESET)
+                {
+                    Response =
+                    {
+                        EventReceive = (response, result) =>
+                        {
+                            Bootloader.AppFlashInfo.Value = *result.Response;
+                            xTracer.Message("Response accept: " + response.Action);
+                            return true;
+                        }
+                    },
+                    Tracer = xTracer.Message
+                };
+
+                public static Builder<FirmwareInfoT, EActions> UpdateInfo = new Builder<FirmwareInfoT, EActions>(Handler, EActions.TRY_UPDATE_INFO)
+                {
+                    Response =
+                    {
+                        EventReceive = (response, result) =>
+                        {
+                            Bootloader.FirmwareInfo.Value = *result.Response;
                             xTracer.Message("Response accept: " + response.Action);
                             return true;
                         }
