@@ -55,7 +55,7 @@ namespace BootloaderDesktop
             request_line = new xRequestLine
             {
                 Requests = UpdateList.List,
-                RequstTransmitter = RequstTransmitter,
+                RequstTransmitter = GetTransmitter,
                 TryCount = 1,
                 ResponseTimeOut = 300,
                 Tracer = xTracer.Message
@@ -71,7 +71,7 @@ namespace BootloaderDesktop
 
         public static xTcp Tcp => tcp;
 
-        private static xAction<bool, byte[]> RequstTransmitter()
+        public static xAction<bool, byte[]> GetTransmitter()
         {
             if (Transmitter != null) { return Transmitter; }
             else if (tcp != null && tcp.IsConnected) { return tcp.Send; }
@@ -89,7 +89,7 @@ namespace BootloaderDesktop
 
         public static async void Erase(uint start_address, uint end_address)
         {
-            var response = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = start_address, EndAdress = end_address }).TransmitionAsync(RequstTransmitter(), 1, 5000);
+            var response = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = start_address, EndAdress = end_address }).TransmitionAsync(GetTransmitter(), 1, 5000);
             xTracer.Message("Erase result: " + response.Result?.Error);
         }
         public static void StopLoad()
@@ -100,33 +100,39 @@ namespace BootloaderDesktop
 
         public static async void SetLock(ELockState request)
         {
-            var response = await Requests.Set.LockState.Prepare(request).TransmitionAsync(RequstTransmitter(), 1, 300);
+            var response = await Requests.Set.LockState.Prepare(request).TransmitionAsync(GetTransmitter(), 1, 300);
             xTracer.Message("Erase result: " + response.Result?.Error);
         }
 
         public static async void JumpToMain()
         {
-            var response = await Requests.Try.JumpToMain.Prepare().TransmitionAsync(RequstTransmitter(), 1, 300);
+            var response = await Requests.Try.JumpToMain.Prepare().TransmitionAsync(GetTransmitter(), 1, 300);
             xTracer.Message("Erase result: " + response.Result?.Error);
         }
 
         public static async void JumpToBoot()
         {
-            var response = await Requests.Try.JumpToBoot.Prepare().TransmitionAsync(RequstTransmitter(), 1, 1000);
+            var response = await Requests.Try.JumpToBoot.Prepare().TransmitionAsync(GetTransmitter(), 1, 1000);
             xTracer.Message("Erase result: " + response.Result?.Error);
             //await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = 0x08004000, EndAdress = 0x08008000 }).TransmitionAsync(RequstTransmitter(), 1, 1000);
         }
 
         public static async void Reset()
         {
-            var response = await Requests.Try.Reset.Prepare().TransmitionAsync(RequstTransmitter(), 1, 300);
+            var response = await Requests.Try.Reset.Prepare().TransmitionAsync(GetTransmitter(), 1, 300);
+            xTracer.Message("Erase result: " + response.Result?.Error);
+        }
+
+        public static async void Read()
+        {
+            var response = await Requests.Try.Reset.Prepare().TransmitionAsync(GetTransmitter(), 1, 300);
             xTracer.Message("Erase result: " + response.Result?.Error);
         }
 
         public static async void LoadAppInfo(uint info_address, FirmwareInfoT info)
         {
             //var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = info_address, EndAdress = info_address + info.PageSize }).TransmitionAsync(RequstTransmitter(), 1, 1000);
-            var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = 0x08004000, EndAdress = 0x08008000 }).TransmitionAsync(RequstTransmitter(), 1, 1000);
+            var result1 = await Requests.Try.Erase.Prepare(new RequestEraseT { StartAddress = 0x08004000, EndAdress = 0x08008000 }).TransmitionAsync(GetTransmitter(), 1, 1000);
 
             Status.Erase.WaitValue(false, 1000);
 
@@ -139,11 +145,11 @@ namespace BootloaderDesktop
                 DataSize = info_size,
             },
             info
-            ).TransmitionAsync(RequstTransmitter(), 1, 1000);
+            ).TransmitionAsync(GetTransmitter(), 1, 1000);
 
             Status.Write.WaitValue(false, 1000);
 
-            var result3 = await Requests.Try.UpdateInfo.Prepare().TransmitionAsync(RequstTransmitter(), 1, 1000);
+            var result3 = await Requests.Try.UpdateInfo.Prepare().TransmitionAsync(GetTransmitter(), 1, 1000);
         }
 
         public static void StartLoad(uint start_address, byte[] firmaware, ushort packet_size)
@@ -177,7 +183,7 @@ namespace BootloaderDesktop
                         DataSize = (ushort)data.Count,
                     },
                     data
-                    ).TransmitionAsync(RequstTransmitter(), 1, 1000);
+                    ).TransmitionAsync(GetTransmitter(), 1, 1000);
 
                     xTracer.Message("Write result: " + result.Result?.Error + ", response time: " + result.ResponseTime);
 

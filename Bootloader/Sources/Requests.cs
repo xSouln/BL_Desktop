@@ -334,6 +334,19 @@ namespace BootloaderDesktop
                     Tracer = xTracer.Message
                 };
 
+                public static Builder<byte, EActions, RequestReadT> Read = new Builder<byte, EActions, RequestReadT>(Handler, EActions.TRY_READ)
+                {
+                    Response =
+                    {
+                        EventReceive = (response, result) =>
+                        {
+                            xTracer.Message("Response" + response.Name + " accept: " + xConverter.GetString(result.Content));
+                            return true;
+                        }
+                    },
+                    Tracer = xTracer.Message
+                };
+
                 public static Builder<StatusT, EActions, RequestEraseT> Erase = new Builder<StatusT, EActions, RequestEraseT>(Handler, EActions.TRY_ERASE)
                 {
                     Response =

@@ -84,26 +84,6 @@ namespace BootloaderDesktop
                     Bootloader.Colections.Structures.Add(row);
                 }
 
-                //Bootloader.Firmware = HexReader.GetFlash(structures);
-                //Bootloader.Firmware = new byte[0x10000 - 0x8000];
-                //int firmware_data_size = HexReader.ToFlashAdd(structures, Bootloader.Firmware);
-
-                //int i = firmware_data_size;
-                /*
-                while (i < Bootloader.Firmware.Length - sizeof(FlashInfoT))
-                {
-                    Bootloader.Firmware[i] = 0xff;
-                    i++;
-                }
-
-                fixed (byte* ptr = Bootloader.Firmware)
-                {
-                    FlashInfoT* info = (FlashInfoT*)(ptr + Bootloader.Firmware.Length - sizeof(FlashInfoT));
-                    info->StartAddress = 0x8000;
-                    info->EndAdress = 0x10000;
-                    info->Crc = 12345;
-                }
-                */
                 Bootloader.Firmware = HexReader.GetFlash(structures);
             }
         }
@@ -151,6 +131,11 @@ namespace BootloaderDesktop
         private void ButReset_Click(object sender, RoutedEventArgs e)
         {
             Bootloader.Reset();
+        }
+
+        private async void ButRead_Click(object sender, RoutedEventArgs e)
+        {
+            var response = await Bootloader.Requests.Try.Read.Prepare(new RequestReadT { StartAddress = 0x08004000, DataSize = 256 }).TransmitionAsync(Bootloader.GetTransmitter(), 1, 1000);
         }
     }
 }

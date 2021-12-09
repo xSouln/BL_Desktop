@@ -108,6 +108,7 @@
             <Button x:Name="ButJumpToMain" Content="To Main" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,135,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButJumpToMain_Click"/>
             <Button x:Name="ButJumpToBoot" Content="To Boot" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,180,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButJumpToBoot_Click"/>
             <Button x:Name="ButReset" Content="Reset" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,225,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButReset_Click"/>
+            <Button x:Name="ButRead" Content="Read" Template="{DynamicResource ButtonTemplate1}" Background="#FF4F4F4F" FontSize="18" Foreground="#FFDEC316" Margin="5,334,5,0" Grid.Column="2" Height="36" VerticalAlignment="Top" Click="ButRead_Click"/>
         </Grid>
         <Label x:Name="LabelCommunication" Content="Communication" Background="{Binding Background}" FontSize="18" HorizontalAlignment="Right" Width="150" Foreground="#FFDEC316" Margin="0,2,5,2"/>
     </Grid>
