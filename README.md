@@ -14,12 +14,16 @@ ___
 
 ## Подключение
 - Возможные интерфейсы одключения находяться в меню "Connection".
-- Подключение по SerialPort устанавливается в меню "Connection" - "SerialPort" установив нужную скорость и Port. При успешно установленом подключении индикатор меню "SerialPort" будет зеленым.
+- Подключение по SerialPort устанавливается в меню "Connection" - "SerialPort". Установив нужную скорость и Port нажать "Connect". При успешно установленом подключении индикатор меню "SerialPort" и индикатор в окне "SerialPort" будут зелеными.
 
-![меню SerialPort](/Images/Screenshot_7.png).
+![меню Connection](/Images/Screenshot_7.png).
 
-- Подключение по TCP устанавливается в меню "Connection" - "Tcp" установив адрес. При успешно установленом подключении индикатор меню "Tcp" будет зеленым.
+![меню Connection-SerialPort](/Images/Screenshot_3.png).
 
-![меню Tcp](/Images/Screenshot_6.png).
+- Подключение по TCP устанавливается в меню "Connection" - "Tcp". Установив адрес устройства нажать "Connect". При успешно установленом подключении индикатор меню "Tcp" и индикатор в окне "Tcp" будут зелеными.
+
+![меню Connection](/Images/Screenshot_6.png).
+
+![меню Connection-Tcp](/Images/Screenshot_5.png).
 
 - При подключенном "SerialPort" и "TCP" предпочтение по обменну данными будет отдоваться SerialPort.
