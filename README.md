@@ -8,6 +8,8 @@ ___
 
 ## Общее
 - Данная версия программы преднозначена для записи и регистрации одного приложения.
+### App flash info
+- Общие данные о состоянии находяться в разделе "App flash info"
 
 ## Установка
 - Скачать программу можно по [ссылке](https://gitlab.adani.by:2443/rekuts/Desktop_Bootloader_STM32/-/archive/main/Desktop_Bootloader_STM32-main.zip?path=Bootloader/Application).
