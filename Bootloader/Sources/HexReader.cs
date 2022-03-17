@@ -21,7 +21,7 @@ namespace BootloaderDesktop
     public class HexReader
     {
         public const int CHECKSUM_SIZE = 2;
-        public const string END_ROW = "\r\n";
+        public const string END_ROW = "\n";
         public const int PREFIX_SIZE = 9;
         public const byte START_CHARECTAR = (byte)':';
 
@@ -32,6 +32,8 @@ namespace BootloaderDesktop
         public static RowStructure[] GetFileStructure(string content)
         {
             List<RowStructure> file_structure = new List<RowStructure>();
+
+            content = content.Replace("\r", "");
 
             string[] rows = xConverter.Split(content, END_ROW);
 
